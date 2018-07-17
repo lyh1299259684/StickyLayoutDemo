@@ -84,4 +84,5 @@ if (position == getItemCount() - 1) {
 }
 recyclerHolder.ll_recycler_item_group.setLayoutParams(layoutParams);
 ```
+
 ## 第一次写Readme, 写的不好还请大佬们理解啊。
