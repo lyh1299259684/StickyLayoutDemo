@@ -8,17 +8,17 @@
 
 * 1.动态创建TabLayout中的tab
 
-` ``Java
+```Java
 //初始化tab
 tab_main.addTab(tab_main.newTab().setText(TAB_TITLE[0]).setTag(Constans.TAB_ANDROID));
 tab_main.addTab(tab_main.newTab().setText(TAB_TITLE[1]).setTag(Constans.TAB_KOTLIN));
 tab_main.addTab(tab_main.newTab().setText(TAB_TITLE[2]).setTag(Constans.TAB_IOS));
 tab_main.addTab(tab_main.newTab().setText(TAB_TITLE[3]).setTag(Constans.TAB_DART));
-` ``
+```
 
 * 2.TabLayout选中监听
 
-` ``Java
+```Java
 /**
  * tabLayout 选择监听
  */
@@ -46,4 +46,4 @@ private TabLayout.OnTabSelectedListener mOnTabSelectedListener = new TabLayout.O
 
     }
 };
-` ``
+```
