@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.liyahong.stickylayoutdemo.MainActivity">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_main"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:tabMode="fixed"
+        app:tabTextColor="@color/black"
+        app:tabSelectedTextColor="@color/blue"
+        app:tabIndicatorHeight="1dp"
+        app:tabIndicatorColor="@color/blue"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:overScrollMode="never"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:paddingLeft="8dp"
+            android:background="@color/white"/>
+    </FrameLayout>
+</LinearLayout>

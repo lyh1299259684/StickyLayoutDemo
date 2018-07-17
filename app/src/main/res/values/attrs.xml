@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--圆角图片-->
+    <attr name="leftRadius" format="dimension"/>
+    <attr name="topRadius" format="dimension"/>
+    <attr name="rightRadius" format="dimension"/>
+    <attr name="bottomRadius" format="dimension"/>
+    <declare-styleable name="RoundImageView">
+        <attr name="leftRadius"/>
+        <attr name="topRadius"/>
+        <attr name="rightRadius"/>
+        <attr name="bottomRadius"/>
+    </declare-styleable>
+</resources>
