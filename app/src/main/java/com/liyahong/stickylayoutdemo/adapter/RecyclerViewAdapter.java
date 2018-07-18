@@ -2,11 +2,10 @@ package com.liyahong.stickylayoutdemo.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.liyahong.stickylayoutdemo.R;
@@ -14,7 +13,8 @@ import com.liyahong.stickylayoutdemo.adapter.base.RecyclerViewBaseAdapter;
 import com.liyahong.stickylayoutdemo.bean.GridItemBean;
 import com.liyahong.stickylayoutdemo.bean.RecyclerItemBean;
 import com.liyahong.stickylayoutdemo.interfaces.OnItemClickListener;
-import com.liyahong.stickylayoutdemo.widget.GridViewMore;
+import com.liyahong.stickylayoutdemo.widget.RecyclerItemDecoration;
+
 import java.util.List;
 
 /**
@@ -54,8 +54,11 @@ public class RecyclerViewAdapter extends RecyclerViewBaseAdapter<RecyclerItemBea
             recyclerHolder.tv_title.setText(recyclerItemBean.getTitle());
 
             List<GridItemBean> gridItemBean = recyclerItemBean.getGridItemBean();
-            recyclerHolder.gv_recycler_item.setAdapter(new GridViewAdapter(context, gridItemBean, R.layout.adapter_grid_item));
-            recyclerHolder.gv_recycler_item.setOnItemClickListener(new OnItemClick(gridItemBean));
+            recyclerHolder.gv_recycler_item.setLayoutManager(new GridLayoutManager(context, 2));
+            recyclerHolder.gv_recycler_item.setAdapter(
+                    new GridViewAdapter(R.layout.adapter_grid_item, context, gridItemBean)
+                    .setOnItemClickListener(onItemClickListener));
+            recyclerHolder.gv_recycler_item.addItemDecoration(new RecyclerItemDecoration(24, 2));
 
             /**
              * 根据支付宝效果模仿的思路
@@ -75,7 +78,7 @@ public class RecyclerViewAdapter extends RecyclerViewBaseAdapter<RecyclerItemBea
     private class RecyclerHolder extends RecyclerView.ViewHolder{
 
         TextView tv_title;
-        GridViewMore gv_recycler_item;
+        RecyclerView gv_recycler_item;
         LinearLayout ll_recycler_item_group;
 
         private RecyclerHolder(View itemView) {
@@ -84,22 +87,6 @@ public class RecyclerViewAdapter extends RecyclerViewBaseAdapter<RecyclerItemBea
             tv_title = itemView.findViewById(R.id.tv_title);
             gv_recycler_item = itemView.findViewById(R.id.gv_recycler_item);
             ll_recycler_item_group = itemView.findViewById(R.id.ll_recycler_item_group);
-        }
-    }
-
-    private class OnItemClick implements GridView.OnItemClickListener{
-
-        private List<GridItemBean> datas;
-
-        private OnItemClick(List<GridItemBean> datas) {
-            this.datas = datas;
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(datas.get(position));
-            }
         }
     }
 }

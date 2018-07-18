@@ -1,6 +1,8 @@
 package com.liyahong.stickylayoutdemo.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -8,7 +10,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.liyahong.stickylayoutdemo.R;
 import com.liyahong.stickylayoutdemo.adapter.base.BaseInfoAdapter;
 import com.liyahong.stickylayoutdemo.adapter.base.BaseViewHolder;
+import com.liyahong.stickylayoutdemo.adapter.base.RecyclerViewBaseAdapter;
 import com.liyahong.stickylayoutdemo.bean.GridItemBean;
+import com.liyahong.stickylayoutdemo.interfaces.OnItemClickListener;
 import com.liyahong.stickylayoutdemo.utils.GlideUtils;
 import com.liyahong.stickylayoutdemo.widget.RoundImageView;
 
@@ -20,40 +24,67 @@ import java.util.List;
  * create time: 2018/7/17 0017 10:12
  */
 
-public class GridViewAdapter extends BaseInfoAdapter<GridItemBean> {
+public class GridViewAdapter extends RecyclerViewBaseAdapter<GridItemBean> {
 
-    public GridViewAdapter(Context context, List<GridItemBean> list, int resId) {
-        super(context, list, resId);
+    private OnItemClickListener<GridItemBean> onItemClickListener;
+
+    public GridViewAdapter(int resId, Context context, List<GridItemBean> list) {
+        super(resId, context, list);
+    }
+
+    public GridViewAdapter setOnItemClickListener(OnItemClickListener<GridItemBean> onItemClickListener){
+        this.onItemClickListener = onItemClickListener;
+        return this;
     }
 
     @Override
-    public BaseViewHolder<GridItemBean> getHolder() {
-        return new GridHolder(context, resId);
+    protected RecyclerView.ViewHolder getViewHolder(View inflate) {
+        return new GridHolder(inflate);
     }
 
-    private class GridHolder extends BaseViewHolder<GridItemBean>{
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        private RoundImageView iv_image;
-        private TextView tv_desc;
+        GridItemBean data = list.get(position);
 
-        private GridHolder(Context context, int resId) {
-            super(context, resId);
+        if (data != null) {
+            GridHolder gridHolder = (GridHolder) holder;
+            GlideUtils.loadImage(context,
+                    data.getImageUrl(),
+                    gridHolder.iv_image,
+                    true,
+                    DiskCacheStrategy.ALL);
+            gridHolder.tv_desc.setText(data.getDesc());
+
+            gridHolder.itemView.setOnClickListener(new OnItemClick(data));
+        }
+    }
+
+    private class GridHolder extends RecyclerView.ViewHolder{
+
+        RoundImageView iv_image;
+        TextView tv_desc;
+
+        private GridHolder(View itemView) {
+            super(itemView);
+            iv_image = itemView.findViewById(R.id.iv_image);
+            tv_desc = itemView.findViewById(R.id.tv_desc);
+        }
+    }
+
+    private class OnItemClick implements View.OnClickListener{
+
+        private GridItemBean data;
+
+        private OnItemClick(GridItemBean data) {
+            this.data = data;
         }
 
         @Override
-        protected void refreshData(int position) {
-            View view = getView();
-            iv_image = view.findViewById(R.id.iv_image);
-            tv_desc = view.findViewById(R.id.tv_desc);
-
-            GridItemBean data = getData();
-
-            GlideUtils.loadImage(context,
-                    data.getImageUrl(),
-                    iv_image,
-                    true,
-                    DiskCacheStrategy.ALL);
-            tv_desc.setText(data.getDesc());
+        public void onClick(View v) {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(data);
+            }
         }
     }
 }

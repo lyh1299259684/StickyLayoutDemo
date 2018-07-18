@@ -14,13 +14,10 @@
         android:textSize="16sp"
         android:paddingLeft="8dp"/>
 
-    <com.liyahong.stickylayoutdemo.widget.GridViewMore
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/gv_recycler_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:verticalSpacing="8dp"
-        android:horizontalSpacing="8dp"
-        android:numColumns="2"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"/>
 </LinearLayout>
