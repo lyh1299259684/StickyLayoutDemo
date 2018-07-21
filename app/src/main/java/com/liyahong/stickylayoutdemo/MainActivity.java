@@ -1,10 +1,14 @@
 package com.liyahong.stickylayoutdemo;
 
+import android.graphics.Rect;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tab_main;
     private TextView tv_title;
     private RecyclerView rv_main;
+    private LinearLayout ll_main;
+    private int rootLayoutHeight, tabHeight;
 
     private RecyclerViewAdapter adapter;
 
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         tab_main = (TabLayout) findViewById(R.id.tab_main);
         tv_title = (TextView) findViewById(R.id.tv_title);
         rv_main = (RecyclerView) findViewById(R.id.rv_main);
+        ll_main = (LinearLayout) findViewById(R.id.ll_main);
     }
 
     private void bindEvent() {
@@ -60,8 +67,21 @@ public class MainActivity extends AppCompatActivity {
         tab_main.addTab(tab_main.newTab().setText(TAB_TITLE[2]).setTag(Constans.TAB_IOS));
         tab_main.addTab(tab_main.newTab().setText(TAB_TITLE[3]).setTag(Constans.TAB_DART));
 
-        //初始化数据
-        initRecycler();
+        //动态获取View的高度
+        ll_main.post(new Runnable() {
+            @Override
+            public void run() {
+                rootLayoutHeight = ll_main.getHeight();
+            }
+        });
+        tab_main.post(new Runnable() {
+            @Override
+            public void run() {
+                tabHeight = tab_main.getHeight();
+                //初始化数据
+                initRecycler();
+            }
+        });
     }
 
     private void initRecycler() {
@@ -105,8 +125,14 @@ public class MainActivity extends AppCompatActivity {
                 case 3:
                     imageUrl = new String[]{
                             "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/352798170/TB1eG3PSXXXXXX3aXXXXXXXXXXX_!!0-item_pic.jpg_250x250.jpg_.webp",
-                            "https://g-search1.alicdn.com/img/bao/uploaded/i4/i4/2990382264/TB1PoTocb1YBuNjSszhXXcUsFXa_!!0-item_pic.jpg_250x250.jpg_.webp"};
-                    desc = new String[]{"《Dart编程语言》", "《Dart语言程序设计》"};
+                            "https://g-search1.alicdn.com/img/bao/uploaded/i4/i4/2990382264/TB1PoTocb1YBuNjSszhXXcUsFXa_!!0-item_pic.jpg_250x250.jpg_.webp",
+                            "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/352798170/TB1eG3PSXXXXXX3aXXXXXXXXXXX_!!0-item_pic.jpg_250x250.jpg_.webp",
+                            "https://g-search1.alicdn.com/img/bao/uploaded/i4/i4/2990382264/TB1PoTocb1YBuNjSszhXXcUsFXa_!!0-item_pic.jpg_250x250.jpg_.webp",
+                            "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/352798170/TB1eG3PSXXXXXX3aXXXXXXXXXXX_!!0-item_pic.jpg_250x250.jpg_.webp",
+                            "https://g-search1.alicdn.com/img/bao/uploaded/i4/i4/2990382264/TB1PoTocb1YBuNjSszhXXcUsFXa_!!0-item_pic.jpg_250x250.jpg_.webp",
+                            "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/352798170/TB1eG3PSXXXXXX3aXXXXXXXXXXX_!!0-item_pic.jpg_250x250.jpg_.webp"};
+                    desc = new String[]{"《Dart编程语言》", "《Dart语言程序设计》","《Dart编程语言》", "《Dart语言程序设计》","《Dart编程语言》",
+                            "《Dart编程语言》", "《Dart语言程序设计》"};
                     break;
             }
 
@@ -133,7 +159,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void refreshAdapter(List<RecyclerItemBean> itemBeans){
         if (adapter == null) {
-            adapter = new RecyclerViewAdapter(R.layout.adapter_recyclerview_item, this, itemBeans);
+            int[] bottom = new int[]{rootLayoutHeight, getSupportActionBar() == null ? tabHeight + 100 : tabHeight + getSupportActionBar().getHeight()};
+            adapter = new RecyclerViewAdapter(R.layout.adapter_recyclerview_item, this, itemBeans, bottom);
             adapter.setOnItemClickListener(mOnItemClickListener);
             rv_main.setAdapter(adapter);
         } else {
