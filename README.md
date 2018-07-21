@@ -71,18 +71,50 @@ private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScr
 
 * 4.RecyclerView最后一条数据处理，重点。
 ```Java
+//获取第一个Item高度，由于所有Item的高度一致，所以获取第一个Item即可
+if (mIsFirstLoad && gridItemBean != null && gridItemBean.size() > 0) {
+    Runnable runnable = new Runnable(){
+       @Override
+       public void run() {
+           //这个必须在子线程中获取，否则获取不到
+           mView = gridLayoutManager.findViewByPosition(0);
+           mIsFirstLoad = false;
+        }
+     };
+     mHandler.postDelayed(runnable, 200);
+ }
+
 /**
  * 根据支付宝效果模仿的思路
  * 思路是这样的：如果是最后一条就设置为充满全屏，否则就是自适应。
  * 解决的问题：如果都是自适应会发现根据滑动无法切换最后两条，如果数据过少有可能就不能切换。
+ *
+ * 修改
+ *     #versionCode 2
+ *     #versionName 1.1
+ *     1.自动计算最后一条状态，如果计算高度 >= maxHeight 就设置为wrap_content, 否则设置为match_content
  */
 ViewGroup.LayoutParams layoutParams = recyclerHolder.ll_recycler_item_group.getLayoutParams();
-if (position == getItemCount() - 1) {
-   layoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
-} else {
-   layoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
-}
+   if (position == getItemCount() - 1) {
+       if (mView != null) {
+          //获取item总数
+          int count = gridItemBean == null ? 0 : gridItemBean.size();
+          //计算行数
+          int rowCount = count % GRID_SPACE_COUNT == 0 ? count / GRID_SPACE_COUNT : (count / GRID_SPACE_COUNT) + 1;
+          //计算RecyclerView的纯高度，不包括间距
+          int itemHeight = mView.getBottom() * rowCount;
+          //计算间距的总高度
+          int spaceHeight = (rowCount - 1) * GRID_ITEM_SPACE;
+          if ((itemHeight + spaceHeight) >= mRecyclerViewMaxHeight) {  //说明以及超出屏幕范围，需设置warp_content
+              layoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+          } else {   //未超出，直接设置match_parent
+              layoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
+          }
+        } else {       //如果为空，直接设置为match_parent
+          layoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
+        }
+     } else {
+        layoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+     }
 recyclerHolder.ll_recycler_item_group.setLayoutParams(layoutParams);
 ```
-
-## 第一次写Readme, 写的不好还请大佬们理解啊。
